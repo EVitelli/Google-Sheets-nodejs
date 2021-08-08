@@ -1,0 +1,24 @@
+{
+  "name": "google_sheets_nodejs",
+  "version": "1.0.0",
+  "description": "Projeto que faz integração com o google sheets para editar planilhas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EVitelli/Google-Sheets-nodejs.git"
+  },
+  "keywords": [],
+  "author": "Erik Vitelli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EVitelli/Google-Sheets-nodejs/issues"
+  },
+  "homepage": "https://github.com/EVitelli/Google-Sheets-nodejs#readme",
+  "dependencies": {
+    "google-spreadsheet": "^3.1.15",
+    "googleapis": "^39.2.0"
+  }
+}
