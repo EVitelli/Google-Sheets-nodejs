@@ -8,8 +8,11 @@ const docId = '185FdmijOJ18jYFBDoCw01awy0N5mgONCqkCrc9OXNtI';
 fs.readFile('credentials.json', async (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
-    await auth.authorize(JSON.parse(content), writeLines);
-    await auth.authorize(JSON.parse(content), getValues);
+
+    var name = 'abcd';
+    await auth.authorize(JSON.parse(content), (auth) => getValues(auth, (range) => {
+        writeLine(auth, ("A" + (range + 1)), name)
+    }));
 });
 
 /**
@@ -17,32 +20,37 @@ fs.readFile('credentials.json', async (err, content) => {
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-function getValues(auth) {
+async function getValues(auth, callback) {
     const sheets = google.sheets({ version: 'v4', auth });
     sheets.spreadsheets.values.get({
         spreadsheetId: docId,
-        range: 'A2:B',
+        range: 'A1:B',
     }, (err, res) => {
 
         if (err) {
             console.log('The API returned an error: ' + err);
         } else {
-            console.log(res.data.values?.length);
-            console.log(res.data.values);
+            //return res.data.values?.length;
+            if (callback) callback(res.data.values?.length);
+            else {
+                console.log(res.data.values?.length);
+                console.log(res.data.values);
+            }
         }
     });
+
 }
 
-function writeLine(auth) {
+async function writeLine(auth, range, name) {
     const sheets = google.sheets({ version: 'v4', auth });
     sheets.spreadsheets.values.update({
         spreadsheetId: docId,
-        range: 'A2',
+        range: range,
         valueInputOption: 'USER_ENTERED',
         resource: {
             values: [
                 [
-                    'Erik Lopes',
+                    name,
                     'Male'
                 ],
             ],
@@ -53,6 +61,10 @@ function writeLine(auth) {
             console.log('The API returned an error: ' + err);
         }
     });
+
+    await setTimeout(() => {
+        getValues(auth);
+    }, 500);
 }
 
 function writeLines(auth) {
@@ -81,4 +93,8 @@ function writeLines(auth) {
             console.log('The API returned an error: ' + err);
         }
     });
+
+    await setTimeout(() => {
+        getValues(auth);
+    }, 500);
 }
